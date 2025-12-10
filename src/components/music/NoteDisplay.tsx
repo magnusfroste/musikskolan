@@ -16,21 +16,21 @@ const noteNames: Record<string, string> = {
   'C5': 'Do',
 };
 
-// Vertical position for each note (percentage from top)
+// Vertical position for each note (pixels from top of 80px container)
 const notePositions: Record<string, number> = {
-  'C5': 10,
-  'B4': 20,
-  'A4': 30,
-  'G4': 40,
-  'F4': 50,
-  'E4': 60,
-  'D4': 70,
-  'C4': 80,
+  'C5': 4,
+  'B4': 14,
+  'A4': 24,
+  'G4': 34,
+  'F4': 44,
+  'E4': 54,
+  'D4': 64,
+  'C4': 74,
 };
 
-const NOTES_PER_ROW = 12;
+const NOTES_PER_ROW = 10;
 
-export function NoteDisplay({ notes, maxNotes = 48 }: NoteDisplayProps) {
+export function NoteDisplay({ notes, maxNotes = 40 }: NoteDisplayProps) {
   const displayNotes = notes.slice(-maxNotes);
   
   const getColorForNote = (note: string) => {
@@ -50,49 +50,49 @@ export function NoteDisplay({ notes, maxNotes = 48 }: NoteDisplayProps) {
         🎵 Din melodi ({displayNotes.length} noter)
       </div>
       
-      <div className="space-y-2 bg-muted/20 rounded-xl p-3">
+      <div className="space-y-3 bg-muted/20 rounded-xl p-3">
         {rows.length === 0 ? (
           <div className="text-center text-sm text-muted-foreground py-8">
             Tryck på tangenterna för att spela! 🎹
           </div>
         ) : (
           rows.map((row, rowIndex) => (
-            <div key={rowIndex} className="relative h-24 bg-card/50 rounded-lg">
+            <div key={rowIndex} className="relative h-20 bg-card/50 rounded-lg overflow-hidden">
               {/* Staff lines */}
-              {[20, 35, 50, 65, 80].map((pos) => (
+              {[16, 28, 40, 52, 64].map((pos) => (
                 <div
                   key={pos}
-                  className="absolute left-2 right-2 h-px bg-muted-foreground/30"
-                  style={{ top: `${pos}%` }}
+                  className="absolute left-0 right-0 h-px bg-muted-foreground/25"
+                  style={{ top: `${pos}px` }}
                 />
               ))}
               
-              {/* Notes */}
-              <div className="absolute inset-0 flex items-start px-3">
+              {/* Notes container */}
+              <div className="absolute inset-0 flex">
                 {row.map((note, index) => {
-                  const position = notePositions[note] || 50;
+                  const topPos = notePositions[note] ?? 40;
                   const globalIndex = rowIndex * NOTES_PER_ROW + index;
                   
                   return (
                     <div
                       key={index}
-                      className="flex-1 flex flex-col items-center animate-bounce-in"
-                      style={{ paddingTop: `${position - 8}%` }}
+                      className="flex-1 relative"
                     >
                       <div
-                        className="h-6 w-6 rounded-full shadow-lg flex items-center justify-center border-2 border-white/50"
-                        style={{ 
-                          backgroundColor: `hsl(var(--${getColorForNote(note)}))`,
-                          boxShadow: `0 2px 8px hsl(var(--${getColorForNote(note)}) / 0.6)`,
-                        }}
+                        className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce-in"
+                        style={{ top: `${topPos}px` }}
                       >
-                        <span className="text-[9px] font-bold text-white drop-shadow">
-                          {globalIndex + 1}
-                        </span>
+                        <div
+                          className="h-5 w-5 rounded-full shadow-md flex items-center justify-center border border-white/40"
+                          style={{ 
+                            backgroundColor: `hsl(var(--${getColorForNote(note)}))`,
+                          }}
+                        >
+                          <span className="text-[8px] font-bold text-white">
+                            {globalIndex + 1}
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-[9px] font-fredoka text-muted-foreground mt-0.5">
-                        {noteNames[note] || note}
-                      </span>
                     </div>
                   );
                 })}
