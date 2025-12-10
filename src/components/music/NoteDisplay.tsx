@@ -14,38 +14,39 @@ export function NoteDisplay({ notes, maxNotes = 16 }: NoteDisplayProps) {
   };
 
   return (
-    <div className="rounded-2xl bg-card p-4 shadow-xl">
-      <div className="mb-2 text-center font-fredoka text-lg text-muted-foreground">
+    <div className="rounded-2xl bg-card p-3 shadow-xl">
+      <div className="mb-1 text-center font-fredoka text-base text-muted-foreground">
         🎵 Din melodi
       </div>
       
       {/* Staff lines */}
-      <div className="relative h-32">
-        {[0, 1, 2, 3, 4].map((line) => (
+      <div className="relative h-16">
+        {[0, 1, 2].map((line) => (
           <div
             key={line}
-            className="absolute left-0 right-0 h-px bg-muted-foreground/30"
-            style={{ top: `${20 + line * 20}%` }}
+            className="absolute left-0 right-0 h-px bg-muted-foreground/20"
+            style={{ top: `${25 + line * 25}%` }}
           />
         ))}
         
         {/* Notes */}
-        <div className="absolute inset-0 flex items-center justify-start gap-2 overflow-x-auto px-2">
+        <div className="absolute inset-0 flex items-center justify-start gap-1.5 overflow-x-auto px-2">
           {displayNotes.map((note, index) => {
             const noteIndex = pianoNotes.findIndex(n => n.note === note);
-            const position = noteIndex >= 0 ? 80 - noteIndex * 10 : 50;
+            // Position from 70% (low C4) down to 10% (high C5) - all within visible range
+            const position = noteIndex >= 0 ? 70 - noteIndex * 8 : 40;
             
             return (
               <div
                 key={index}
                 className="relative flex-shrink-0 animate-bounce-in"
-                style={{ marginTop: `${position - 50}%` }}
+                style={{ marginTop: `${position - 40}%` }}
               >
                 <div
-                  className="h-6 w-6 rounded-full shadow-lg"
+                  className="h-5 w-5 rounded-full shadow-lg"
                   style={{ 
                     backgroundColor: `hsl(var(--${getColorForNote(note)}))`,
-                    boxShadow: `0 4px 12px hsl(var(--${getColorForNote(note)}) / 0.5)`,
+                    boxShadow: `0 3px 8px hsl(var(--${getColorForNote(note)}) / 0.5)`,
                   }}
                 />
               </div>
@@ -53,7 +54,7 @@ export function NoteDisplay({ notes, maxNotes = 16 }: NoteDisplayProps) {
           })}
           
           {displayNotes.length === 0 && (
-            <div className="w-full text-center text-muted-foreground">
+            <div className="w-full text-center text-sm text-muted-foreground">
               Tryck på tangenterna för att spela! 🎹
             </div>
           )}
