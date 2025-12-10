@@ -16,7 +16,7 @@ const Index = () => {
               <Music size={32} className="text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-fredoka text-2xl font-bold text-foreground md:text-3xl">Musikrummet</h1>
+              <h1 className="font-fredoka text-2xl font-bold text-foreground md:text-3xl">Musikskolan</h1>
               <p className="text-sm text-muted-foreground">Skapa din egen musik! 🎵</p>
             </div>
           </div>
