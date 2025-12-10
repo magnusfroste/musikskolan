@@ -25,16 +25,24 @@ export function NoteDisplay({ notes, maxNotes = 32 }: NoteDisplayProps) {
   };
 
   return (
-    <div className="rounded-2xl bg-card p-4 shadow-xl w-full">
+    <div className="rounded-2xl bg-card p-4 shadow-xl w-full overflow-hidden">
       <div className="mb-2 text-center font-fredoka text-base text-muted-foreground">
         🎵 Din melodi ({displayNotes.length} noter)
       </div>
       
-      <div className="min-h-24 w-full flex flex-wrap content-start gap-2 justify-start items-start p-2 bg-muted/30 rounded-xl overflow-hidden">
+      <div 
+        className="min-h-24 p-2 bg-muted/30 rounded-xl"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(48px, 1fr))',
+          gap: '8px',
+          alignContent: 'start',
+        }}
+      >
         {displayNotes.map((note, index) => (
           <div
             key={index}
-            className="flex-shrink-0 flex flex-col items-center gap-1 animate-bounce-in"
+            className="flex flex-col items-center gap-1 animate-bounce-in"
           >
             <div
               className="h-8 w-8 rounded-full shadow-lg flex items-center justify-center"
@@ -54,7 +62,7 @@ export function NoteDisplay({ notes, maxNotes = 32 }: NoteDisplayProps) {
         ))}
         
         {displayNotes.length === 0 && (
-          <div className="w-full text-center text-sm text-muted-foreground py-4">
+          <div className="col-span-full text-center text-sm text-muted-foreground py-4">
             Tryck på tangenterna för att spela! 🎹
           </div>
         )}
