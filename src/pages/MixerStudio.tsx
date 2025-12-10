@@ -65,12 +65,26 @@ const MixerStudio = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   
-  const { initAudio } = useAudio();
+  const { initAudio, playMixerLoops, stopMixerLoops } = useAudio();
   const { progress, saveSong } = useGameProgress();
 
   useEffect(() => {
     initAudio();
   }, [initAudio]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      playMixerLoops(selectedLoops);
+    } else {
+      stopMixerLoops();
+    }
+  }, [isPlaying, selectedLoops, playMixerLoops, stopMixerLoops]);
+
+  useEffect(() => {
+    return () => {
+      stopMixerLoops();
+    };
+  }, [stopMixerLoops]);
 
   const handleSelectLoop = (trackId: string, loopId: string | null) => {
     setSelectedLoops(prev => ({ ...prev, [trackId]: loopId }));
