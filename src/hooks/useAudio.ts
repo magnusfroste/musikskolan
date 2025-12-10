@@ -25,12 +25,40 @@ export const pianoNotes = [
   { note: 'C5', color: 'pink', name: 'Do' },
 ];
 
+// Mixer loop patterns
+const drumPatterns = {
+  beat1: ['kick', null, 'hihat', null, 'snare', null, 'hihat', null, 'kick', 'kick', 'hihat', null, 'snare', null, 'hihat', 'hihat'],
+  beat2: ['kick', 'hihat', 'kick', 'hihat', 'snare', 'hihat', 'kick', 'hihat', 'kick', 'hihat', 'kick', 'hihat', 'snare', 'hihat', 'clap', 'hihat'],
+  beat3: ['kick', null, null, 'hihat', null, null, 'snare', null, null, null, 'kick', null, null, 'hihat', 'snare', null],
+};
+
+const bassPatterns = {
+  bass1: ['C2', null, 'C2', null, 'E2', null, 'G2', null, 'C2', null, 'E2', null, 'G2', null, 'B1', null],
+  bass2: ['C2', null, null, null, 'G2', null, null, null, 'C2', null, null, null, 'G2', null, null, null],
+  bass3: ['C2', 'C2', null, 'C2', 'E2', 'E2', null, 'E2', 'G2', 'G2', null, 'G2', 'B1', 'B1', null, 'B1'],
+};
+
+const melodyPatterns = {
+  melody1: ['E4', null, 'G4', null, 'A4', null, 'G4', null, 'E4', null, 'D4', null, 'C4', null, null, null],
+  melody2: ['E4', null, null, 'D#4', null, null, 'E4', null, null, 'B3', null, null, 'D4', null, 'C4', null],
+  melody3: ['C4', null, 'E4', null, 'G4', null, 'C5', null, 'B4', null, 'G4', null, 'E4', null, 'C4', null],
+};
+
+const effectPatterns = {
+  fx1: [null, null, null, null, 'star', null, null, null, null, null, null, null, 'star', null, null, null],
+  fx2: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'clap'],
+  fx3: ['bell', null, null, null, null, null, null, null, 'bell', null, null, null, null, null, null, null],
+};
+
 export function useAudio() {
   const synthRef = useRef<Tone.PolySynth | null>(null);
+  const bassSynthRef = useRef<Tone.MonoSynth | null>(null);
   const drumRef = useRef<Tone.MembraneSynth | null>(null);
   const noiseRef = useRef<Tone.NoiseSynth | null>(null);
   const metalRef = useRef<Tone.MetalSynth | null>(null);
+  const bellRef = useRef<Tone.PolySynth | null>(null);
   const sequencerRef = useRef<Tone.Sequence | null>(null);
+  const mixerSequencersRef = useRef<Tone.Sequence[]>([]);
   const isInitialized = useRef(false);
 
   const initAudio = useCallback(async () => {
@@ -43,6 +71,13 @@ export function useAudio() {
       envelope: { attack: 0.02, decay: 0.1, sustain: 0.3, release: 0.8 },
     }).toDestination();
     synthRef.current.volume.value = -6;
+
+    bassSynthRef.current = new Tone.MonoSynth({
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.01, decay: 0.3, sustain: 0.4, release: 0.2 },
+      filterEnvelope: { attack: 0.01, decay: 0.2, sustain: 0.5, release: 0.2, baseFrequency: 200, octaves: 2 },
+    }).toDestination();
+    bassSynthRef.current.volume.value = -8;
 
     drumRef.current = new Tone.MembraneSynth({
       pitchDecay: 0.05,
@@ -59,6 +94,12 @@ export function useAudio() {
 
     metalRef.current = new Tone.MetalSynth().toDestination();
     metalRef.current.volume.value = -15;
+
+    bellRef.current = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.5 },
+    }).toDestination();
+    bellRef.current.volume.value = -10;
 
     isInitialized.current = true;
   }, []);
@@ -132,11 +173,104 @@ export function useAudio() {
     });
   }, [initAudio]);
 
+  const playMixerLoops = useCallback(async (selectedLoops: Record<string, string | null>) => {
+    await initAudio();
+    
+    // Stop and dispose existing mixer sequencers
+    mixerSequencersRef.current.forEach(seq => seq.dispose());
+    mixerSequencersRef.current = [];
+    Tone.getTransport().stop();
+    
+    Tone.getTransport().bpm.value = 110;
+
+    // Drums
+    if (selectedLoops.drums && drumPatterns[selectedLoops.drums as keyof typeof drumPatterns]) {
+      const pattern = drumPatterns[selectedLoops.drums as keyof typeof drumPatterns];
+      const drumSeq = new Tone.Sequence(
+        (time, sound) => {
+          if (sound === 'kick') {
+            drumRef.current?.triggerAttackRelease('C1', '8n', time);
+          } else if (sound === 'snare') {
+            noiseRef.current?.triggerAttackRelease('8n', time);
+          } else if (sound === 'hihat') {
+            metalRef.current?.triggerAttackRelease('F#1', '32n', time);
+          } else if (sound === 'clap') {
+            noiseRef.current?.triggerAttackRelease('16n', time);
+          }
+        },
+        pattern,
+        '16n'
+      );
+      drumSeq.start(0);
+      mixerSequencersRef.current.push(drumSeq);
+    }
+
+    // Bass
+    if (selectedLoops.bass && bassPatterns[selectedLoops.bass as keyof typeof bassPatterns]) {
+      const pattern = bassPatterns[selectedLoops.bass as keyof typeof bassPatterns];
+      const bassSeq = new Tone.Sequence(
+        (time, note) => {
+          if (note) {
+            bassSynthRef.current?.triggerAttackRelease(note, '16n', time);
+          }
+        },
+        pattern,
+        '16n'
+      );
+      bassSeq.start(0);
+      mixerSequencersRef.current.push(bassSeq);
+    }
+
+    // Melody
+    if (selectedLoops.melody && melodyPatterns[selectedLoops.melody as keyof typeof melodyPatterns]) {
+      const pattern = melodyPatterns[selectedLoops.melody as keyof typeof melodyPatterns];
+      const melodySeq = new Tone.Sequence(
+        (time, note) => {
+          if (note) {
+            synthRef.current?.triggerAttackRelease(note, '8n', time);
+          }
+        },
+        pattern,
+        '16n'
+      );
+      melodySeq.start(0);
+      mixerSequencersRef.current.push(melodySeq);
+    }
+
+    // Effects
+    if (selectedLoops.effects && effectPatterns[selectedLoops.effects as keyof typeof effectPatterns]) {
+      const pattern = effectPatterns[selectedLoops.effects as keyof typeof effectPatterns];
+      const fxSeq = new Tone.Sequence(
+        (time, fx) => {
+          if (fx === 'star') {
+            bellRef.current?.triggerAttackRelease(['C6', 'E6', 'G6'], '16n', time);
+          } else if (fx === 'clap') {
+            noiseRef.current?.triggerAttackRelease('8n', time);
+          } else if (fx === 'bell') {
+            bellRef.current?.triggerAttackRelease('C5', '4n', time);
+          }
+        },
+        pattern,
+        '16n'
+      );
+      fxSeq.start(0);
+      mixerSequencersRef.current.push(fxSeq);
+    }
+
+    Tone.getTransport().start();
+  }, [initAudio]);
+
+  const stopMixerLoops = useCallback(() => {
+    Tone.getTransport().stop();
+    mixerSequencersRef.current.forEach(seq => seq.stop());
+  }, []);
+
   useEffect(() => {
     return () => {
       if (sequencerRef.current) {
         sequencerRef.current.dispose();
       }
+      mixerSequencersRef.current.forEach(seq => seq.dispose());
       Tone.getTransport().stop();
     };
   }, []);
@@ -148,6 +282,8 @@ export function useAudio() {
     playBeat,
     stopBeat,
     playMelody,
+    playMixerLoops,
+    stopMixerLoops,
     pianoNotes,
   };
 }
