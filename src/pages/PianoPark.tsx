@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Play, Save, Trash2, Music } from 'lucide-react';
+import { Play, Save, Trash2, Music, Gamepad2 } from 'lucide-react';
 import { BackButton } from '@/components/music/BackButton';
 import { StarCounter } from '@/components/music/StarCounter';
 import { Piano } from '@/components/music/Piano';
 import { NoteDisplay } from '@/components/music/NoteDisplay';
 import { SaveDialog } from '@/components/music/SaveDialog';
+import { RhythmGame } from '@/components/music/RhythmGame';
 import { useAudio } from '@/hooks/useAudio';
 import { useGameProgress } from '@/hooks/useGameProgress';
 import { Button } from '@/components/ui/button';
@@ -54,9 +55,10 @@ const PianoPark = () => {
   const [recordedNotes, setRecordedNotes] = useState<string[]>([]);
   const [isPlayingMelody, setIsPlayingMelody] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showRhythmGame, setShowRhythmGame] = useState(false);
   
   const { playNote, playMelody, initAudio } = useAudio();
-  const { progress, saveSong } = useGameProgress();
+  const { progress, saveSong, addStars } = useGameProgress();
 
   useEffect(() => {
     initAudio();
@@ -108,52 +110,72 @@ const PianoPark = () => {
       </header>
 
       <main className="mx-auto mt-6 max-w-4xl space-y-6">
-        {/* Piano */}
-        <section className="rounded-3xl bg-card p-6 shadow-xl">
-          <h2 className="mb-4 text-center font-fredoka text-lg text-muted-foreground">
-            Spela på tangenterna! 🎵
-          </h2>
-          <Piano 
-            onPlayNote={playNote} 
-            onNoteRecorded={handleNoteRecorded}
+        {/* Rhythm Game Toggle */}
+        {showRhythmGame ? (
+          <RhythmGame 
+            onExit={() => setShowRhythmGame(false)} 
+            onStarsEarned={addStars}
           />
-        </section>
+        ) : (
+          <>
+            {/* Rhythm Hero Button */}
+            <section className="rounded-2xl bg-gradient-to-r from-primary/20 to-effects-blue/20 p-4 shadow-lg">
+              <button
+                onClick={() => setShowRhythmGame(true)}
+                className="flex w-full items-center justify-center gap-3 rounded-xl bg-primary/10 p-4 transition-all hover:scale-102 hover:bg-primary/20"
+              >
+                <Gamepad2 className="text-primary" size={32} />
+                <span className="font-fredoka text-xl font-bold text-foreground">🎸 Rytm Hero</span>
+                <span className="text-muted-foreground">- Klicka i takt!</span>
+              </button>
+            </section>
 
-        {/* Note Display */}
-        <NoteDisplay notes={recordedNotes} />
+            {/* Piano */}
+            <section className="rounded-3xl bg-card p-6 shadow-xl">
+              <h2 className="mb-4 text-center font-fredoka text-lg text-muted-foreground">
+                Spela på tangenterna! 🎵
+              </h2>
+              <Piano 
+                onPlayNote={playNote} 
+                onNoteRecorded={handleNoteRecorded}
+              />
+            </section>
 
-        {/* Controls */}
-        <section className="flex flex-wrap items-center justify-center gap-3">
-          <Button
-            onClick={handlePlayRecorded}
-            disabled={recordedNotes.length === 0 || isPlayingMelody}
-            className={`gap-2 rounded-xl px-6 py-6 font-fredoka text-lg ${
-              isPlayingMelody ? 'animate-pulse' : ''
-            }`}
-            style={{ backgroundColor: 'hsl(var(--melody-green))' }}
-          >
-            <Play size={24} />
-            {isPlayingMelody ? 'Spelar...' : 'Spela upp'}
-          </Button>
+            {/* Note Display */}
+            <NoteDisplay notes={recordedNotes} />
 
-          <Button
-            onClick={() => setRecordedNotes([])}
-            variant="outline"
-            className="gap-2 rounded-xl border-2 px-4 py-6 font-fredoka"
-          >
-            <Trash2 size={20} />
-            Rensa
-          </Button>
+            {/* Controls */}
+            <section className="flex flex-wrap items-center justify-center gap-3">
+              <Button
+                onClick={handlePlayRecorded}
+                disabled={recordedNotes.length === 0 || isPlayingMelody}
+                className={`gap-2 rounded-xl px-6 py-6 font-fredoka text-lg ${
+                  isPlayingMelody ? 'animate-pulse' : ''
+                }`}
+                style={{ backgroundColor: 'hsl(var(--melody-green))' }}
+              >
+                <Play size={24} />
+                {isPlayingMelody ? 'Spelar...' : 'Spela upp'}
+              </Button>
 
-          <Button
-            onClick={() => setShowSaveDialog(true)}
-            disabled={recordedNotes.length === 0}
-            className="gap-2 rounded-xl bg-secondary px-4 py-6 font-fredoka text-secondary-foreground hover:bg-secondary/90"
-          >
-            <Save size={20} />
-            Spara
-          </Button>
-        </section>
+              <Button
+                onClick={() => setRecordedNotes([])}
+                variant="outline"
+                className="gap-2 rounded-xl border-2 px-4 py-6 font-fredoka"
+              >
+                <Trash2 size={20} />
+                Rensa
+              </Button>
+
+              <Button
+                onClick={() => setShowSaveDialog(true)}
+                disabled={recordedNotes.length === 0}
+                className="gap-2 rounded-xl bg-secondary px-4 py-6 font-fredoka text-secondary-foreground hover:bg-secondary/90"
+              >
+                <Save size={20} />
+                Spara
+              </Button>
+            </section>
 
         {/* Sample Melodies */}
         <section className="rounded-2xl bg-card p-4 shadow-lg">
@@ -200,6 +222,8 @@ const PianoPark = () => {
             })}
           </div>
         </section>
+          </>
+        )}
       </main>
 
       <SaveDialog
