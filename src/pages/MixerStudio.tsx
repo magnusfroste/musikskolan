@@ -7,6 +7,7 @@ import { SaveDialog } from '@/components/music/SaveDialog';
 import { useAudio } from '@/hooks/useAudio';
 import { useGameProgress } from '@/hooks/useGameProgress';
 import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 
 const tracks = [
   {
@@ -64,6 +65,7 @@ const MixerStudio = () => {
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [tempo, setTempo] = useState(110);
   
   const { initAudio, playMixerLoops, stopMixerLoops } = useAudio();
   const { progress, saveSong } = useGameProgress();
@@ -74,11 +76,11 @@ const MixerStudio = () => {
 
   useEffect(() => {
     if (isPlaying) {
-      playMixerLoops(selectedLoops);
+      playMixerLoops(selectedLoops, tempo);
     } else {
       stopMixerLoops();
     }
-  }, [isPlaying, selectedLoops, playMixerLoops, stopMixerLoops]);
+  }, [isPlaying, selectedLoops, tempo, playMixerLoops, stopMixerLoops]);
 
   useEffect(() => {
     return () => {
@@ -158,6 +160,31 @@ const MixerStudio = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Tempo Control */}
+        <section className="rounded-2xl bg-card p-4 shadow-lg">
+          <div className="flex items-center gap-4">
+            <span className="text-2xl">🎚️</span>
+            <div className="flex-1">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="font-fredoka font-semibold text-foreground">Tempo</span>
+                <span className="font-fredoka text-lg font-bold text-primary">{tempo} BPM</span>
+              </div>
+              <Slider
+                value={[tempo]}
+                onValueChange={(value) => setTempo(value[0])}
+                min={60}
+                max={180}
+                step={5}
+                className="w-full"
+              />
+              <div className="mt-1 flex justify-between font-fredoka text-xs text-muted-foreground">
+                <span>🐢 Långsamt</span>
+                <span>🐇 Snabbt</span>
+              </div>
+            </div>
           </div>
         </section>
 

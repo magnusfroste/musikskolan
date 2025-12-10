@@ -173,7 +173,7 @@ export function useAudio() {
     });
   }, [initAudio]);
 
-  const playMixerLoops = useCallback(async (selectedLoops: Record<string, string | null>) => {
+  const playMixerLoops = useCallback(async (selectedLoops: Record<string, string | null>, tempo: number = 110) => {
     await initAudio();
     
     // Stop and dispose existing mixer sequencers
@@ -181,7 +181,7 @@ export function useAudio() {
     mixerSequencersRef.current = [];
     Tone.getTransport().stop();
     
-    Tone.getTransport().bpm.value = 110;
+    Tone.getTransport().bpm.value = tempo;
 
     // Drums
     if (selectedLoops.drums && drumPatterns[selectedLoops.drums as keyof typeof drumPatterns]) {
