@@ -1,4 +1,4 @@
-import { Drum, Piano, Headphones, Trophy, Music } from "lucide-react";
+import { Drum, Piano, Headphones, Trophy, Music, Guitar } from "lucide-react";
 import { StarCounter } from "@/components/music/StarCounter";
 import { ModuleCard } from "@/components/music/ModuleCard";
 import { useGameProgress } from "@/hooks/useGameProgress";
@@ -56,12 +56,20 @@ const Index = () => {
             delay={200}
           />
           <ModuleCard
+            to="/guitar-glade"
+            icon={Guitar}
+            title="Gitarrgläntan"
+            description="Enkelt och roligt!"
+            color="bass-yellow"
+            delay={300}
+          />
+          <ModuleCard
             to="/my-room"
             icon={Trophy}
             title="Mitt Rum"
             description="Dina låtar & märken"
             color="pink-accent"
-            delay={300}
+            delay={400}
           />
         </div>
 
