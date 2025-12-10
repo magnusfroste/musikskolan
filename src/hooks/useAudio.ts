@@ -163,14 +163,31 @@ export function useAudio() {
     }
   }, []);
 
-  const playMelody = useCallback(async (notes: string[], tempo: number = 120) => {
+  const playMelody = useCallback(async (
+    notes: Array<string | { note: string; duration?: string }>, 
+    tempo: number = 120
+  ) => {
     await initAudio();
     
-    Tone.getTransport().bpm.value = tempo;
+    // Calculate beat duration in seconds (quarter note at given tempo)
+    const beatDuration = 60 / tempo;
     
-    const now = Tone.now();
-    notes.forEach((note, i) => {
-      synthRef.current?.triggerAttackRelease(note, '8n', now + i * 0.3);
+    let currentTime = Tone.now();
+    notes.forEach((noteData) => {
+      const note = typeof noteData === 'string' ? noteData : noteData.note;
+      const duration = typeof noteData === 'string' ? '4n' : (noteData.duration || '4n');
+      
+      // Convert duration to seconds
+      let durationInBeats = 1; // quarter note = 1 beat
+      if (duration === '2n') durationInBeats = 2; // half note
+      else if (duration === '8n') durationInBeats = 0.5; // eighth note
+      else if (duration === '4n') durationInBeats = 1; // quarter note
+      
+      if (note !== 'rest') {
+        synthRef.current?.triggerAttackRelease(note, duration, currentTime);
+      }
+      
+      currentTime += beatDuration * durationInBeats;
     });
   }, [initAudio]);
 
