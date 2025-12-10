@@ -9,21 +9,44 @@ import { useAudio } from '@/hooks/useAudio';
 import { useGameProgress } from '@/hooks/useGameProgress';
 import { Button } from '@/components/ui/button';
 
-const sampleMelodies = [
+type MelodyNote = string | { note: string; duration?: string };
+
+const sampleMelodies: Array<{ name: string; emoji: string; notes: MelodyNote[] }> = [
   { 
     name: 'Blinka Lilla Stjärna', 
     emoji: '⭐',
-    notes: ['C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'] 
+    // Blin-ka lil-la stjär-na där, hur jag und-rar vad du är
+    notes: [
+      { note: 'C4', duration: '4n' }, { note: 'C4', duration: '4n' },
+      { note: 'G4', duration: '4n' }, { note: 'G4', duration: '4n' },
+      { note: 'A4', duration: '4n' }, { note: 'A4', duration: '4n' },
+      { note: 'G4', duration: '2n' },
+      { note: 'F4', duration: '4n' }, { note: 'F4', duration: '4n' },
+      { note: 'E4', duration: '4n' }, { note: 'E4', duration: '4n' },
+      { note: 'D4', duration: '4n' }, { note: 'D4', duration: '4n' },
+      { note: 'C4', duration: '2n' },
+    ]
   },
   { 
     name: 'Bä Bä Vita Lamm', 
     emoji: '🐑',
-    notes: ['C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'A4', 'G4'] 
+    // Bä bä vi-ta lamm, har du nå-gon ull?
+    notes: [
+      { note: 'C4', duration: '4n' }, { note: 'C4', duration: '4n' },
+      { note: 'G4', duration: '4n' }, { note: 'G4', duration: '4n' },
+      { note: 'A4', duration: '8n' }, { note: 'A4', duration: '8n' }, { note: 'A4', duration: '4n' },
+      { note: 'G4', duration: '2n' },
+    ]
   },
   { 
     name: 'Glad Melodi', 
     emoji: '😊',
-    notes: ['C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'C5'] 
+    notes: [
+      { note: 'C4', duration: '4n' }, { note: 'E4', duration: '4n' },
+      { note: 'G4', duration: '4n' }, { note: 'E4', duration: '4n' },
+      { note: 'C4', duration: '4n' }, { note: 'E4', duration: '4n' },
+      { note: 'G4', duration: '4n' }, { note: 'C5', duration: '2n' },
+    ]
   },
 ];
 
@@ -50,10 +73,18 @@ const PianoPark = () => {
     setTimeout(() => setIsPlayingMelody(false), recordedNotes.length * 300 + 500);
   };
 
-  const handlePlaySample = async (notes: string[]) => {
+  const handlePlaySample = async (notes: MelodyNote[]) => {
     setIsPlayingMelody(true);
-    await playMelody(notes, 120);
-    setTimeout(() => setIsPlayingMelody(false), notes.length * 300 + 500);
+    await playMelody(notes, 100);
+    // Calculate total duration based on note lengths
+    const totalBeats = notes.reduce((acc, note) => {
+      const duration = typeof note === 'string' ? '4n' : (note.duration || '4n');
+      if (duration === '2n') return acc + 2;
+      if (duration === '8n') return acc + 0.5;
+      return acc + 1;
+    }, 0);
+    const beatDuration = 60 / 100; // tempo 100
+    setTimeout(() => setIsPlayingMelody(false), totalBeats * beatDuration * 1000 + 500);
   };
 
   const handleSave = (name: string) => {
