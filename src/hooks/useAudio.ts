@@ -15,14 +15,14 @@ const drumSounds = {
 
 // Piano notes with colors
 export const pianoNotes = [
-  { note: 'C4', color: 'drum', name: 'Do' },
-  { note: 'D4', color: 'orange', name: 'Re' },
-  { note: 'E4', color: 'bass', name: 'Mi' },
-  { note: 'F4', color: 'melody', name: 'Fa' },
-  { note: 'G4', color: 'cyan', name: 'Sol' },
-  { note: 'A4', color: 'effects', name: 'La' },
+  { note: 'C4', color: 'drum-red', name: 'Do' },
+  { note: 'D4', color: 'orange-accent', name: 'Re' },
+  { note: 'E4', color: 'bass-yellow', name: 'Mi' },
+  { note: 'F4', color: 'melody-green', name: 'Fa' },
+  { note: 'G4', color: 'cyan-accent', name: 'Sol' },
+  { note: 'A4', color: 'effects-blue', name: 'La' },
   { note: 'B4', color: 'primary', name: 'Si' },
-  { note: 'C5', color: 'pink', name: 'Do' },
+  { note: 'C5', color: 'pink-accent', name: 'Do' },
 ];
 
 // Mixer loop patterns
