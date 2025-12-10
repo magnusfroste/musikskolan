@@ -5,7 +5,18 @@ interface NoteDisplayProps {
   maxNotes?: number;
 }
 
-export function NoteDisplay({ notes, maxNotes = 16 }: NoteDisplayProps) {
+const noteNames: Record<string, string> = {
+  'C4': 'Do',
+  'D4': 'Re',
+  'E4': 'Mi',
+  'F4': 'Fa',
+  'G4': 'Sol',
+  'A4': 'La',
+  'B4': 'Si',
+  'C5': 'Do',
+};
+
+export function NoteDisplay({ notes, maxNotes = 32 }: NoteDisplayProps) {
   const displayNotes = notes.slice(-maxNotes);
   
   const getColorForNote = (note: string) => {
@@ -14,51 +25,39 @@ export function NoteDisplay({ notes, maxNotes = 16 }: NoteDisplayProps) {
   };
 
   return (
-    <div className="rounded-2xl bg-card p-3 shadow-xl">
-      <div className="mb-1 text-center font-fredoka text-base text-muted-foreground">
-        🎵 Din melodi
+    <div className="rounded-2xl bg-card p-4 shadow-xl">
+      <div className="mb-2 text-center font-fredoka text-base text-muted-foreground">
+        🎵 Din melodi ({displayNotes.length} noter)
       </div>
       
-      {/* Staff lines */}
-      <div className="relative h-16">
-        {[0, 1, 2].map((line) => (
+      <div className="min-h-24 flex flex-wrap gap-2 justify-start items-start p-2 bg-muted/30 rounded-xl">
+        {displayNotes.map((note, index) => (
           <div
-            key={line}
-            className="absolute left-0 right-0 h-px bg-muted-foreground/20"
-            style={{ top: `${25 + line * 25}%` }}
-          />
+            key={index}
+            className="flex flex-col items-center gap-1 animate-bounce-in"
+          >
+            <div
+              className="h-8 w-8 rounded-full shadow-lg flex items-center justify-center"
+              style={{ 
+                backgroundColor: `hsl(var(--${getColorForNote(note)}))`,
+                boxShadow: `0 3px 8px hsl(var(--${getColorForNote(note)}) / 0.5)`,
+              }}
+            >
+              <span className="text-xs font-bold text-white drop-shadow">
+                {index + 1}
+              </span>
+            </div>
+            <span className="text-xs font-fredoka text-muted-foreground">
+              {noteNames[note] || note}
+            </span>
+          </div>
         ))}
         
-        {/* Notes */}
-        <div className="absolute inset-0 flex items-center justify-start gap-1.5 overflow-x-auto px-2">
-          {displayNotes.map((note, index) => {
-            const noteIndex = pianoNotes.findIndex(n => n.note === note);
-            // Position from 70% (low C4) down to 10% (high C5) - all within visible range
-            const position = noteIndex >= 0 ? 70 - noteIndex * 8 : 40;
-            
-            return (
-              <div
-                key={index}
-                className="relative flex-shrink-0 animate-bounce-in"
-                style={{ marginTop: `${position - 40}%` }}
-              >
-                <div
-                  className="h-5 w-5 rounded-full shadow-lg"
-                  style={{ 
-                    backgroundColor: `hsl(var(--${getColorForNote(note)}))`,
-                    boxShadow: `0 3px 8px hsl(var(--${getColorForNote(note)}) / 0.5)`,
-                  }}
-                />
-              </div>
-            );
-          })}
-          
-          {displayNotes.length === 0 && (
-            <div className="w-full text-center text-sm text-muted-foreground">
-              Tryck på tangenterna för att spela! 🎹
-            </div>
-          )}
-        </div>
+        {displayNotes.length === 0 && (
+          <div className="w-full text-center text-sm text-muted-foreground py-4">
+            Tryck på tangenterna för att spela! 🎹
+          </div>
+        )}
       </div>
     </div>
   );
