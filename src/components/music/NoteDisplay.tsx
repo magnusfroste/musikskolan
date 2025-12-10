@@ -30,11 +30,11 @@ export function NoteDisplay({ notes, maxNotes = 32 }: NoteDisplayProps) {
         🎵 Din melodi ({displayNotes.length} noter)
       </div>
       
-      <div className="min-h-24 flex flex-wrap gap-2 justify-start items-start p-2 bg-muted/30 rounded-xl">
+      <div className="min-h-24 flex flex-wrap content-start gap-2 justify-start items-start p-2 bg-muted/30 rounded-xl">
         {displayNotes.map((note, index) => (
           <div
             key={index}
-            className="flex flex-col items-center gap-1 animate-bounce-in"
+            className="flex-shrink-0 flex flex-col items-center gap-1 animate-bounce-in"
           >
             <div
               className="h-8 w-8 rounded-full shadow-lg flex items-center justify-center"
