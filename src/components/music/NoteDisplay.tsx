@@ -25,12 +25,12 @@ export function NoteDisplay({ notes, maxNotes = 32 }: NoteDisplayProps) {
   };
 
   return (
-    <div className="rounded-2xl bg-card p-4 shadow-xl">
+    <div className="rounded-2xl bg-card p-4 shadow-xl w-full">
       <div className="mb-2 text-center font-fredoka text-base text-muted-foreground">
         🎵 Din melodi ({displayNotes.length} noter)
       </div>
       
-      <div className="min-h-24 flex flex-wrap content-start gap-2 justify-start items-start p-2 bg-muted/30 rounded-xl">
+      <div className="min-h-24 w-full flex flex-wrap content-start gap-2 justify-start items-start p-2 bg-muted/30 rounded-xl overflow-hidden">
         {displayNotes.map((note, index) => (
           <div
             key={index}
