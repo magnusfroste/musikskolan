@@ -323,7 +323,14 @@ export function useAudio() {
 
   const stopMixerLoops = useCallback(() => {
     Tone.getTransport().stop();
-    mixerSequencersRef.current.forEach(seq => seq.stop());
+    mixerSequencersRef.current.forEach(seq => {
+      try {
+        seq.dispose();
+      } catch (e) {
+        // Ignore timing errors during cleanup
+      }
+    });
+    mixerSequencersRef.current = [];
   }, []);
 
   useEffect(() => {
