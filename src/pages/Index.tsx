@@ -1,7 +1,7 @@
-import { Drum, Piano, Headphones, Trophy, Music } from 'lucide-react';
-import { StarCounter } from '@/components/music/StarCounter';
-import { ModuleCard } from '@/components/music/ModuleCard';
-import { useGameProgress } from '@/hooks/useGameProgress';
+import { Drum, Piano, Headphones, Trophy, Music } from "lucide-react";
+import { StarCounter } from "@/components/music/StarCounter";
+import { ModuleCard } from "@/components/music/ModuleCard";
+import { useGameProgress } from "@/hooks/useGameProgress";
 
 const Index = () => {
   const { progress } = useGameProgress();
@@ -16,9 +16,7 @@ const Index = () => {
               <Music size={32} className="text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-fredoka text-2xl font-bold text-foreground md:text-3xl">
-                MusicMaker Kids
-              </h1>
+              <h1 className="font-fredoka text-2xl font-bold text-foreground md:text-3xl">Musikikubik</h1>
               <p className="text-sm text-muted-foreground">Skapa din egen musik! 🎵</p>
             </div>
           </div>
@@ -70,15 +68,10 @@ const Index = () => {
         {/* Recent badges */}
         {progress.badges.length > 0 && (
           <div className="mt-8 rounded-2xl bg-card p-4 shadow-lg">
-            <h2 className="mb-3 font-fredoka text-lg font-bold text-foreground">
-              Senaste märken 🏆
-            </h2>
+            <h2 className="mb-3 font-fredoka text-lg font-bold text-foreground">Senaste märken 🏆</h2>
             <div className="flex flex-wrap gap-3">
               {progress.badges.slice(-3).map((badge) => (
-                <div
-                  key={badge.id}
-                  className="flex items-center gap-2 rounded-xl bg-secondary/30 px-3 py-2"
-                >
+                <div key={badge.id} className="flex items-center gap-2 rounded-xl bg-secondary/30 px-3 py-2">
                   <span className="text-2xl">{badge.icon}</span>
                   <span className="font-semibold text-foreground">{badge.name}</span>
                 </div>
