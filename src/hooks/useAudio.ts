@@ -59,6 +59,7 @@ export function useAudio() {
   const bellRef = useRef<Tone.PolySynth | null>(null);
   const sequencerRef = useRef<Tone.Sequence | null>(null);
   const mixerSequencersRef = useRef<Tone.Sequence[]>([]);
+  const mixerGainsRef = useRef<Record<string, Tone.Gain>>({});
   const isInitialized = useRef(false);
 
   const initAudio = useCallback(async () => {
@@ -173,15 +174,66 @@ export function useAudio() {
     });
   }, [initAudio]);
 
-  const playMixerLoops = useCallback(async (selectedLoops: Record<string, string | null>, tempo: number = 110) => {
+  const playMixerLoops = useCallback(async (
+    selectedLoops: Record<string, string | null>, 
+    tempo: number = 110,
+    volumes: Record<string, number> = { drums: 80, bass: 80, melody: 80, effects: 80 },
+    muted: Record<string, boolean> = { drums: false, bass: false, melody: false, effects: false }
+  ) => {
     await initAudio();
     
     // Stop and dispose existing mixer sequencers
     mixerSequencersRef.current.forEach(seq => seq.dispose());
     mixerSequencersRef.current = [];
+    Object.values(mixerGainsRef.current).forEach(gain => gain.dispose());
+    mixerGainsRef.current = {};
     Tone.getTransport().stop();
     
     Tone.getTransport().bpm.value = tempo;
+
+    // Create gain nodes for each track
+    const drumsGain = new Tone.Gain(muted.drums ? 0 : volumes.drums / 100).toDestination();
+    const bassGain = new Tone.Gain(muted.bass ? 0 : volumes.bass / 100).toDestination();
+    const melodyGain = new Tone.Gain(muted.melody ? 0 : volumes.melody / 100).toDestination();
+    const effectsGain = new Tone.Gain(muted.effects ? 0 : volumes.effects / 100).toDestination();
+    
+    mixerGainsRef.current = { drums: drumsGain, bass: bassGain, melody: melodyGain, effects: effectsGain };
+
+    // Create dedicated synths for mixer
+    const mixerDrum = new Tone.MembraneSynth({
+      pitchDecay: 0.05,
+      octaves: 4,
+      envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 },
+    }).connect(drumsGain);
+
+    const mixerNoise = new Tone.NoiseSynth({
+      noise: { type: 'white' },
+      envelope: { attack: 0.005, decay: 0.1, sustain: 0 },
+    }).connect(drumsGain);
+
+    const mixerMetal = new Tone.MetalSynth().connect(drumsGain);
+    mixerMetal.volume.value = -10;
+
+    const mixerBass = new Tone.MonoSynth({
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.01, decay: 0.3, sustain: 0.4, release: 0.2 },
+      filterEnvelope: { attack: 0.01, decay: 0.2, sustain: 0.5, release: 0.2, baseFrequency: 200, octaves: 2 },
+    }).connect(bassGain);
+
+    const mixerMelody = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.02, decay: 0.1, sustain: 0.3, release: 0.8 },
+    }).connect(melodyGain);
+
+    const mixerBell = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.001, decay: 0.5, sustain: 0, release: 0.5 },
+    }).connect(effectsGain);
+
+    const mixerFxNoise = new Tone.NoiseSynth({
+      noise: { type: 'white' },
+      envelope: { attack: 0.005, decay: 0.1, sustain: 0 },
+    }).connect(effectsGain);
 
     // Drums
     if (selectedLoops.drums && drumPatterns[selectedLoops.drums as keyof typeof drumPatterns]) {
@@ -189,13 +241,13 @@ export function useAudio() {
       const drumSeq = new Tone.Sequence(
         (time, sound) => {
           if (sound === 'kick') {
-            drumRef.current?.triggerAttackRelease('C1', '8n', time);
+            mixerDrum.triggerAttackRelease('C1', '8n', time);
           } else if (sound === 'snare') {
-            noiseRef.current?.triggerAttackRelease('8n', time);
+            mixerNoise.triggerAttackRelease('8n', time);
           } else if (sound === 'hihat') {
-            metalRef.current?.triggerAttackRelease('F#1', '32n', time);
+            mixerMetal.triggerAttackRelease('F#1', '32n', time);
           } else if (sound === 'clap') {
-            noiseRef.current?.triggerAttackRelease('16n', time);
+            mixerNoise.triggerAttackRelease('16n', time);
           }
         },
         pattern,
@@ -211,7 +263,7 @@ export function useAudio() {
       const bassSeq = new Tone.Sequence(
         (time, note) => {
           if (note) {
-            bassSynthRef.current?.triggerAttackRelease(note, '16n', time);
+            mixerBass.triggerAttackRelease(note, '16n', time);
           }
         },
         pattern,
@@ -227,7 +279,7 @@ export function useAudio() {
       const melodySeq = new Tone.Sequence(
         (time, note) => {
           if (note) {
-            synthRef.current?.triggerAttackRelease(note, '8n', time);
+            mixerMelody.triggerAttackRelease(note, '8n', time);
           }
         },
         pattern,
@@ -243,11 +295,11 @@ export function useAudio() {
       const fxSeq = new Tone.Sequence(
         (time, fx) => {
           if (fx === 'star') {
-            bellRef.current?.triggerAttackRelease(['C6', 'E6', 'G6'], '16n', time);
+            mixerBell.triggerAttackRelease(['C6', 'E6', 'G6'], '16n', time);
           } else if (fx === 'clap') {
-            noiseRef.current?.triggerAttackRelease('8n', time);
+            mixerFxNoise.triggerAttackRelease('8n', time);
           } else if (fx === 'bell') {
-            bellRef.current?.triggerAttackRelease('C5', '4n', time);
+            mixerBell.triggerAttackRelease('C5', '4n', time);
           }
         },
         pattern,
@@ -259,6 +311,15 @@ export function useAudio() {
 
     Tone.getTransport().start();
   }, [initAudio]);
+
+  const setMixerVolumes = useCallback((
+    volumes: Record<string, number>,
+    muted: Record<string, boolean>
+  ) => {
+    Object.entries(mixerGainsRef.current).forEach(([track, gain]) => {
+      gain.gain.value = muted[track] ? 0 : volumes[track] / 100;
+    });
+  }, []);
 
   const stopMixerLoops = useCallback(() => {
     Tone.getTransport().stop();
@@ -284,6 +345,7 @@ export function useAudio() {
     playMelody,
     playMixerLoops,
     stopMixerLoops,
+    setMixerVolumes,
     pianoNotes,
   };
 }

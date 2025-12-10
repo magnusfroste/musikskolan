@@ -1,5 +1,5 @@
 import { Volume2, VolumeX } from 'lucide-react';
-import { useState } from 'react';
+import { Slider } from '@/components/ui/slider';
 
 interface MixerTrackProps {
   name: string;
@@ -8,33 +8,64 @@ interface MixerTrackProps {
   loops: { id: string; name: string }[];
   selectedLoop: string | null;
   onSelectLoop: (loopId: string | null) => void;
+  volume: number;
+  onVolumeChange: (volume: number) => void;
+  muted: boolean;
+  onMutedChange: (muted: boolean) => void;
 }
 
-export function MixerTrack({ name, emoji, color, loops, selectedLoop, onSelectLoop }: MixerTrackProps) {
-  const [muted, setMuted] = useState(false);
-
+export function MixerTrack({ 
+  name, 
+  emoji, 
+  color, 
+  loops, 
+  selectedLoop, 
+  onSelectLoop,
+  volume,
+  onVolumeChange,
+  muted,
+  onMutedChange,
+}: MixerTrackProps) {
   return (
     <div 
       className="rounded-2xl p-4 shadow-lg transition-all"
       style={{ backgroundColor: `hsl(var(--${color}) / 0.2)` }}
     >
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="text-2xl">{emoji}</span>
           <span className="font-fredoka font-bold" style={{ color: `hsl(var(--${color}))` }}>
             {name}
           </span>
         </div>
-        <button
-          onClick={() => setMuted(!muted)}
-          className="rounded-full p-2 transition-colors hover:bg-white/20"
-        >
-          {muted ? (
-            <VolumeX size={20} className="text-muted-foreground" />
-          ) : (
-            <Volume2 size={20} style={{ color: `hsl(var(--${color}))` }} />
-          )}
-        </button>
+        
+        {/* Volume control */}
+        <div className="flex flex-1 items-center gap-2 max-w-[180px]">
+          <button
+            onClick={() => onMutedChange(!muted)}
+            className="rounded-full p-2 transition-colors hover:bg-white/20"
+          >
+            {muted ? (
+              <VolumeX size={20} className="text-muted-foreground" />
+            ) : (
+              <Volume2 size={20} style={{ color: `hsl(var(--${color}))` }} />
+            )}
+          </button>
+          <Slider
+            value={[muted ? 0 : volume]}
+            onValueChange={(v) => {
+              if (muted && v[0] > 0) onMutedChange(false);
+              onVolumeChange(v[0]);
+            }}
+            min={0}
+            max={100}
+            step={5}
+            className="flex-1"
+            style={{ 
+              '--slider-color': `hsl(var(--${color}))` 
+            } as React.CSSProperties}
+          />
+        </div>
       </div>
       
       <div className="flex flex-wrap gap-2">

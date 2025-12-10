@@ -63,11 +63,23 @@ const MixerStudio = () => {
     melody: null,
     effects: null,
   });
+  const [volumes, setVolumes] = useState<Record<string, number>>({
+    drums: 80,
+    bass: 80,
+    melody: 80,
+    effects: 80,
+  });
+  const [muted, setMuted] = useState<Record<string, boolean>>({
+    drums: false,
+    bass: false,
+    melody: false,
+    effects: false,
+  });
   const [isPlaying, setIsPlaying] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [tempo, setTempo] = useState(110);
   
-  const { initAudio, playMixerLoops, stopMixerLoops } = useAudio();
+  const { initAudio, playMixerLoops, stopMixerLoops, setMixerVolumes } = useAudio();
   const { progress, saveSong } = useGameProgress();
 
   useEffect(() => {
@@ -76,11 +88,18 @@ const MixerStudio = () => {
 
   useEffect(() => {
     if (isPlaying) {
-      playMixerLoops(selectedLoops, tempo);
+      playMixerLoops(selectedLoops, tempo, volumes, muted);
     } else {
       stopMixerLoops();
     }
   }, [isPlaying, selectedLoops, tempo, playMixerLoops, stopMixerLoops]);
+
+  // Update volumes in real-time while playing
+  useEffect(() => {
+    if (isPlaying) {
+      setMixerVolumes(volumes, muted);
+    }
+  }, [volumes, muted, isPlaying, setMixerVolumes]);
 
   useEffect(() => {
     return () => {
@@ -90,6 +109,14 @@ const MixerStudio = () => {
 
   const handleSelectLoop = (trackId: string, loopId: string | null) => {
     setSelectedLoops(prev => ({ ...prev, [trackId]: loopId }));
+  };
+
+  const handleVolumeChange = (trackId: string, volume: number) => {
+    setVolumes(prev => ({ ...prev, [trackId]: volume }));
+  };
+
+  const handleMutedChange = (trackId: string, isMuted: boolean) => {
+    setMuted(prev => ({ ...prev, [trackId]: isMuted }));
   };
 
   const handleSave = (name: string) => {
@@ -130,6 +157,10 @@ const MixerStudio = () => {
               loops={track.loops}
               selectedLoop={selectedLoops[track.id]}
               onSelectLoop={(loopId) => handleSelectLoop(track.id, loopId)}
+              volume={volumes[track.id]}
+              onVolumeChange={(v) => handleVolumeChange(track.id, v)}
+              muted={muted[track.id]}
+              onMutedChange={(m) => handleMutedChange(track.id, m)}
             />
           ))}
         </section>
