@@ -89,6 +89,21 @@ const Index = () => {
         )}
       </main>
 
+      {/* Footer */}
+      <footer className="mx-auto mt-12 max-w-2xl pb-6 text-center">
+        <p className="text-sm text-muted-foreground">
+          Skapat av <span className="font-semibold text-foreground">Magnus Froste</span> · {" "}
+          <a 
+            href="https://github.com/magnusfroste" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            Open Source på GitHub
+          </a>
+        </p>
+      </footer>
+
       {/* Decorative elements */}
       <div className="fixed -bottom-20 -left-20 h-40 w-40 rounded-full bg-drum/20 blur-3xl" />
       <div className="fixed -bottom-20 -right-20 h-40 w-40 rounded-full bg-melody/20 blur-3xl" />
