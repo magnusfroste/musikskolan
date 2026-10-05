@@ -38,7 +38,7 @@ const DrumRoom = () => {
   const { playDrum, playBeat, stopBeat, initAudio } = useAudio();
   const { progress, saveSong } = useGameProgress();
   const stepRef = useRef(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     initAudio();
