@@ -1,4 +1,4 @@
-import { Drum, Piano, Headphones, Trophy, Music, Guitar } from "lucide-react";
+import { Drum, Piano, Headphones, Trophy, Music, Guitar, GraduationCap, Ear, BookOpen, Blocks } from "lucide-react";
 import { StarCounter } from "@/components/music/StarCounter";
 import { ModuleCard } from "@/components/music/ModuleCard";
 import { useGameProgress } from "@/hooks/useGameProgress";
@@ -30,6 +30,13 @@ const Index = () => {
           <p className="font-fredoka text-xl text-foreground">Vad vill du göra idag?</p>
         </div>
 
+        <div className="mb-4 grid grid-cols-2 gap-4">
+          <ModuleCard to="/lektioner" icon={GraduationCap} title="Dagens lektion" description="Lär dig lite varje dag!" color="orange-accent" />
+          <ModuleCard to="/noter" icon={BookOpen} title="Notskolan" description="Läs riktiga noter!" color="primary" delay={50} />
+          <ModuleCard to="/gehor" icon={Ear} title="Gehörslabbet" description="Träna dina öron!" color="cyan-accent" delay={100} />
+          <ModuleCard to="/latbyggare" icon={Blocks} title="Låtbyggaren" description="Bygg en hel låt!" color="melody-green" delay={150} />
+        </div>
+        <p className="mb-4 text-center font-fredoka text-xl text-foreground">…eller skapa musik fritt 🎶</p>
         <div className="grid grid-cols-2 gap-4">
           <ModuleCard
             to="/drum-room"

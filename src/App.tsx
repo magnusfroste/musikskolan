@@ -9,6 +9,10 @@ import PianoPark from "./pages/PianoPark";
 import GuitarGlade from "./pages/GuitarGlade";
 import MixerStudio from "./pages/MixerStudio";
 import MyRoom from "./pages/MyRoom";
+import Lessons from "./pages/Lessons";
+import EarTraining from "./pages/EarTraining";
+import NoteSchool from "./pages/NoteSchool";
+import SongBuilder from "./pages/SongBuilder";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +30,10 @@ const App = () => (
           <Route path="/guitar-glade" element={<GuitarGlade />} />
           <Route path="/mixer-studio" element={<MixerStudio />} />
           <Route path="/my-room" element={<MyRoom />} />
+          <Route path="/lektioner" element={<Lessons />} />
+          <Route path="/gehor" element={<EarTraining />} />
+          <Route path="/noter" element={<NoteSchool />} />
+          <Route path="/latbyggare" element={<SongBuilder />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

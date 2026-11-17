@@ -1,0 +1,1 @@
+- Learning quizzes (lessons, ear training, note school) share generators in src/lib/quiz.ts and the QuizRunner component — keeps one question engine for all learning modes.
