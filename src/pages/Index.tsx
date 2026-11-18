@@ -30,13 +30,6 @@ const Index = () => {
           <p className="font-fredoka text-xl text-foreground">Vad vill du göra idag?</p>
         </div>
 
-        <div className="mb-4 grid grid-cols-2 gap-4">
-          <ModuleCard to="/lektioner" icon={GraduationCap} title="Dagens lektion" description="Lär dig lite varje dag!" color="orange-accent" />
-          <ModuleCard to="/noter" icon={BookOpen} title="Notskolan" description="Läs riktiga noter!" color="primary" delay={50} />
-          <ModuleCard to="/gehor" icon={Ear} title="Gehörslabbet" description="Träna dina öron!" color="cyan-accent" delay={100} />
-          <ModuleCard to="/latbyggare" icon={Blocks} title="Låtbyggaren" description="Bygg en hel låt!" color="melody-green" delay={150} />
-        </div>
-        <p className="mb-4 text-center font-fredoka text-xl text-foreground">…eller skapa musik fritt 🎶</p>
         <div className="grid grid-cols-2 gap-4">
           <ModuleCard
             to="/drum-room"
@@ -71,6 +64,14 @@ const Index = () => {
             delay={300}
           />
           <ModuleCard
+            to="/latbyggare"
+            icon={Blocks}
+            title="Låtbyggaren"
+            description="Bygg en hel låt!"
+            color="cyan-accent"
+            delay={350}
+          />
+          <ModuleCard
             to="/my-room"
             icon={Trophy}
             title="Mitt Rum"
@@ -78,6 +79,14 @@ const Index = () => {
             color="pink-accent"
             delay={400}
           />
+        </div>
+
+        {/* Learning section */}
+        <p className="mb-4 mt-8 text-center font-fredoka text-xl text-foreground">…eller lär dig mer om musik 🎓</p>
+        <div className="grid grid-cols-3 gap-3">
+          <ModuleCard to="/lektioner" icon={GraduationCap} title="Dagens lektion" description="Lite varje dag!" color="orange-accent" />
+          <ModuleCard to="/noter" icon={BookOpen} title="Notskolan" description="Läs riktiga noter!" color="primary" delay={50} />
+          <ModuleCard to="/gehor" icon={Ear} title="Gehörslabbet" description="Träna dina öron!" color="cyan-accent" delay={100} />
         </div>
 
         {/* Recent badges */}
