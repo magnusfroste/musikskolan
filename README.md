@@ -6,6 +6,8 @@ gehörsträning. Allt ljud skapas i webbläsaren med Tone.js, och det behövs in
 
 **Spela:** https://musiken.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
+![Musikskolan](public/kort.png)
+
 Började som ett Lovable-projekt och körs nu fristående.
 
 ## Vad du kan göra
