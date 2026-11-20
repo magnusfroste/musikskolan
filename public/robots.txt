@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://musikskolan.skolappar.com/sitemap.xml
+Sitemap: https://musiken.skolappar.com/sitemap.xml
