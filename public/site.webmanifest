@@ -1,0 +1,23 @@
+{
+  "name": "Musikskolan",
+  "short_name": "Musikskolan",
+  "description": "Musikskolan låter barn spela trummor, piano och gitarr, mixa ljud och bygga egna låtar – direkt i webbläsaren. Allt ljud skapas lokalt, så appen fungerar utan nät och utan konto.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#9333ea",
+  "theme_color": "#9333ea",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "scope": "/",
+  "lang": "sv"
+}

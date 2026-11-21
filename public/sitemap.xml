@@ -1,33 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://musikskolan.skolappar.com/</loc>
-  </url>
-  <url>
-    <loc>https://musikskolan.skolappar.com/drum-room</loc>
-  </url>
-  <url>
-    <loc>https://musikskolan.skolappar.com/piano-park</loc>
-  </url>
-  <url>
-    <loc>https://musikskolan.skolappar.com/guitar-glade</loc>
-  </url>
-  <url>
-    <loc>https://musikskolan.skolappar.com/mixer-studio</loc>
-  </url>
-  <url>
-    <loc>https://musikskolan.skolappar.com/my-room</loc>
-  </url>
-  <url>
-    <loc>https://musikskolan.skolappar.com/lektioner</loc>
-  </url>
-  <url>
-    <loc>https://musikskolan.skolappar.com/noter</loc>
-  </url>
-  <url>
-    <loc>https://musikskolan.skolappar.com/gehor</loc>
-  </url>
-  <url>
-    <loc>https://musikskolan.skolappar.com/latbyggare</loc>
-  </url>
+  <url><loc>https://musiken.skolappar.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
 </urlset>
