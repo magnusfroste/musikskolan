@@ -8,7 +8,7 @@ gehörsträning. Allt ljud skapas i webbläsaren med Tone.js, och det behövs in
 
 ![Musikskolan](public/kort.png)
 
-Började som ett Lovable-projekt och körs nu fristående.
+Körs fristående.
 
 ## Vad du kan göra
 
