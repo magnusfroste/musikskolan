@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Trophy, RotateCcw, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { report } from '@/lib/skolappar';
 import { useAudio, pianoNotes } from '@/hooks/useAudio';
 
 interface RhythmNote {
@@ -137,6 +138,13 @@ export function RhythmGame({ onExit, onStarsEarned }: RhythmGameProps) {
   };
 
   // Countdown effect
+  // A song ends: report the share of notes hit
+  useEffect(() => {
+    if (gameState !== 'results' || !selectedSong) return;
+    report('round_done', Math.round(((perfectHits + goodHits) / (selectedSong.notes.length || 1)) * 100));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState]);
+
   useEffect(() => {
     if (gameState !== 'countdown') return;
     
@@ -145,6 +153,7 @@ export function RhythmGame({ onExit, onStarsEarned }: RhythmGameProps) {
       return () => clearTimeout(timer);
     } else {
       setGameState('playing');
+      report('round_start');
       gameStartTime.current = performance.now();
       if (selectedSong) {
         setFallingNotes(selectedSong.notes.map(n => ({

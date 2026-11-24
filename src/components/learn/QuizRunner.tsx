@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useAudio } from '@/hooks/useAudio';
 import { NOTE_POOL, type Question } from '@/lib/quiz';
+import { report } from '@/lib/skolappar';
 import { Staff } from './Staff';
 
-interface Props { questions: Question[]; onFinish: (correct: number) => void }
+interface Props { questions: Question[]; onFinish: (correct: number) => void; level?: number }
 
 const PRAISE = ['Snyggt! 🎉', 'Rätt! ⭐', 'Wow! 🌟', 'Du är grym! 🔥'];
 
-export function QuizRunner({ questions, onFinish }: Props) {
+export function QuizRunner({ questions, onFinish, level }: Props) {
   const { playNote } = useAudio();
   const [i, setI] = useState(0);
   const [chosen, setChosen] = useState<string | null>(null);
@@ -19,15 +20,25 @@ export function QuizRunner({ questions, onFinish }: Props) {
 
   const play = () => q.play?.forEach((n, k) => setTimeout(() => playNote(n), k * 700));
   useEffect(() => { if (q.kind !== 'readNote') play(); /* eslint-disable-next-line */ }, [i]);
+  // A quiz is one round; lessons pass their place on the path as the level
+  useEffect(() => {
+    report('round_start');
+    if (level) report('level', level);
+    /* eslint-disable-next-line */
+  }, []);
 
   const choose = (id: string) => {
     if (chosen) return;
     setChosen(id);
     if (id === q.answer) setCorrect(c => c + 1);
+    else report('hint');
     if (q.kind === 'readNote') playNote(q.answer);
   };
   const next = () => {
-    if (i + 1 >= questions.length) return onFinish(correct);
+    if (i + 1 >= questions.length) {
+      report('round_done', Math.round((correct / questions.length) * 100));
+      return onFinish(correct);
+    }
     setI(i + 1); setChosen(null);
   };
   const isRight = chosen === q.answer;

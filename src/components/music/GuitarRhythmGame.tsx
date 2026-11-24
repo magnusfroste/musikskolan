@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Trophy, RotateCcw, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { report } from '@/lib/skolappar';
 import { useAudio } from '@/hooks/useAudio';
 import { guitarStrings } from './Guitar';
 
@@ -147,6 +148,13 @@ export function GuitarRhythmGame({ onExit, onStarsEarned }: GuitarRhythmGameProp
   };
 
   // Countdown effect
+  // A song ends: report the share of notes hit
+  useEffect(() => {
+    if (gameState !== 'results' || !selectedSong) return;
+    report('round_done', Math.round(((perfectHits + goodHits) / (selectedSong.notes.length || 1)) * 100));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState]);
+
   useEffect(() => {
     if (gameState !== 'countdown') return;
     
@@ -155,6 +163,7 @@ export function GuitarRhythmGame({ onExit, onStarsEarned }: GuitarRhythmGameProp
       return () => clearTimeout(timer);
     } else {
       setGameState('playing');
+      report('round_start');
       gameStartTime.current = performance.now();
       if (selectedSong) {
         setFallingNotes(selectedSong.notes.map(n => ({
