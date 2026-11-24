@@ -69,7 +69,7 @@ const Lessons = () => {
             <Button onClick={() => setIntro(false)} size="lg" className="mt-5 rounded-full font-fredoka">Starta!</Button>
           </div>
         )}
-        {active && !intro && result === null && <QuizRunner questions={qs} onFinish={finish} />}
+        {active && !intro && result === null && <QuizRunner questions={qs} onFinish={finish} level={LESSONS.indexOf(active) + 1} />}
         {active && result !== null && (
           <ResultCard correct={result} total={qs.length} onAgain={() => start(active)} onBack={() => setActive(null)} />
         )}
