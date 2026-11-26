@@ -6,12 +6,12 @@ Musik i kubik är en lekfull musikskola på webben för barn i åldrarna 5–10 
 
 ## Sektioner
 
-- [Startsidan](https://musiken.skolappar.com/): översikten där du väljer musikrum.
-- [Trumrummet](https://musiken.skolappar.com/drum-room): spela trummor och bygga egna beats.
-- [Pianoparken](https://musiken.skolappar.com/piano-park): färgkodat piano, notinlärning och rytmspel med fallande noter.
-- [Gitarrgläntan](https://musiken.skolappar.com/guitar-glade): enkel fyrsträngad gitarr och ett gitarrspel för de yngsta.
-- [Mixerstudion](https://musiken.skolappar.com/mixer-studio): mixa ljudloopar och justera tempo och volym.
-- [Mitt Rum](https://musiken.skolappar.com/my-room): sparade låtar, stjärnor och märken.
+- [Startsidan](https://musiken.skolappar.org/): översikten där du väljer musikrum.
+- [Trumrummet](https://musiken.skolappar.org/drum-room): spela trummor och bygga egna beats.
+- [Pianoparken](https://musiken.skolappar.org/piano-park): färgkodat piano, notinlärning och rytmspel med fallande noter.
+- [Gitarrgläntan](https://musiken.skolappar.org/guitar-glade): enkel fyrsträngad gitarr och ett gitarrspel för de yngsta.
+- [Mixerstudion](https://musiken.skolappar.org/mixer-studio): mixa ljudloopar och justera tempo och volym.
+- [Mitt Rum](https://musiken.skolappar.org/my-room): sparade låtar, stjärnor och märken.
 
 ## Upphovsman
 

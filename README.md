@@ -4,7 +4,7 @@ Musikskolan låter barn i åk 1–6 spela trummor, piano och gitarr, mixa färdi
 bygga egna låtar direkt i webbläsaren. Den har också korta lektioner, notläsning och
 gehörsträning. Allt ljud skapas i webbläsaren med Tone.js, och det behövs inget konto.
 
-**Spela:** https://musiken.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
+**Spela:** https://musiken.skolappar.org · En del av [Skolappar](https://www.skolappar.org) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
 ![Musikskolan](public/kort.png)
 
